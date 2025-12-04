@@ -1,12 +1,25 @@
 const express = require("express");
+
 const app = express();
 
-app.use("/hello", (req, res) => {
-  res.send("Hello world!");
+const { userAuth } = require("./middlewares/auth");
+
+app.use("/", (req, res, next) => {
+  console.log("1st Middleware");
+  next();
 });
-app.use("/", (req, res) => {
-  res.send("Home page");
-});
+
+app.get(
+  "/users",
+  userAuth,
+  (req, res, next) => {
+    console.log("2nd middleware");
+    next();
+  },
+  (req, res) => {
+    res.send("response sent");
+  }
+);
 app.listen(3000, () => {
-  console.log("Server is running");
+  console.log("Server running succesfully");
 });
